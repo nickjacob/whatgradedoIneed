@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>what grade do I need?</title>
+		<meta name="description" content="" />
+		<meta name="author" content="Nick Jacob" />
+		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script type ="text/javascript" src="tipTipv13/jquery.tipTip.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Nothing+You+Could+Do' rel='stylesheet' type='text/css'>
+
+		<link rel="stylesheet" href="tipTipv13/tipTip.css"/>
+		<link rel="stylesheet" href="style.css"/>
+		<script type="text/javascript">
+			function isValid(x){
+				var y = parseInt(x);
+				if(isNaN(y)) return false;
+				if(x==y && x.toString()==y.toString()){
+					return x<100 && x>0;
+				}
+				return false;
+			}
+			$(document).ready(function(){
+				// get positions of elements
+				var posA = $("#add").offset();
+				$("#ap").position($("#add").offset());			
+				// hide error
+				//$(".point").hide();
+				$("#error").hide();
+				
+				
+				$(":text").click(function(){
+					$(this).select();
+				});
+				$("#add").click(function(){
+					var newRow = "</br><input type='text' class='grade no name' value=''/><input type='text' class='grade'/><input type='text' class='percent'/>";
+					$("#rows").append($(newRow).hide().fadeIn());
+				});
+				
+				// stuff that actually happens...
+				$("#sub").click(function() {
+					// reset the error
+					$("#error").hide();
+					$("#output").text(function(){
+						var gradeVals = new Array();
+						var perVals = new Array();
+						var grades = $(".grade").not(".no");
+						var percents = $(".percent").not(".no");
+						var need = $("#need").val();
+						var total = 0;
+						// validation
+						grades.each(function(i){
+							gradeVals.push(parseInt($(this).val()));
+					
+						});
+						percents.each(function(i){
+							perVals.push(parseInt($(this).val()));
+							
+						});
+						for (v in gradeVals){
+							total += gradeVals[v]*(perVals[v]/100);
+						}
+						var per = 0;
+						$.each(perVals,function(){
+							per += this;
+						});
+						per = (100-per)/100;
+						var nick = total - need;
+						if((nick/-per)>100) {
+							$("#error").text("I'm really sorry...").fadeIn();
+						}
+						if((nick/-per)<0){
+							$("#error").text("looks like you don't need to hand in your final..").fadeIn();
+						}
+						if(isNaN(nick) || isNaN(per)){
+							$("#error").text("grades & percents have to be entered 0-100. kthx").fadeIn();
+							return;
+						}
+						return Math.ceil(nick/-per)+"%";
+					});
+					
+				});
+			});
+		</script>
+	</head>
+	<body>
+	<!-- facebook api -->
+	<div id="fb-root"></div>
+		<script>(function(d, s, id) {
+		  var js, fjs = d.getElementsByTagName(s)[0];
+		  if (d.getElementById(id)) return;
+		  js = d.createElement(s); js.id = id;
+		  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=198678453535546";
+		  fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+		</script>
+<div id="stripe">	
+
+		<div id="header">
+			<h1>what grade do I need?</h1>
+			<div id="fthis">on this fucking final</div>
+			<span id="subtitle">don't study too hard. find out the lowest grade you can get on that final. to add more grades, just hit the + sign. </span>
+		</div>
+		<div id="container">
+			<div class="main"><form>
+				<div id="left">
+				<div id="rows">
+					<span id="arn">name of assignment</span><span id="ttl">grade received</span><span id="tlt">% of total</span></br>
+					<input type="text" class="grade no name demo" value="term paper" disabled="true"/><input type="text" disabled="true" title="for each assignment, put the grade you got on this side" class="grade no demo" value="80"/><input disabled="true" type="text"  title="and put the percent of yoru total grade that it was worth here" value="20" class="demo percent no"/>
+					</br><input type="text" class="grade no name" value=""/><input type="text" id="f" title="for each assignment, put the grade you got on this side" class="grade"/><input type="text" id="g" title="and put the percent of your total grade that it was worth here"  class="percent"/>
+					</br><input type="text" class="grade no name" value=""/><input type="text" id="f" title="for each assignment, put the grade you got on this side" class="grade"/><input type="text" id="g" title="and put the percent of your total grade that it was worth here"  class="percent"/>
+					</br><input type="text" class="grade no name" value=""/><input type="text" id="f" title="for each assignment, put the grade you got on this side" class="grade"/><input type="text" id="g" title="and put the percent of your total grade that it was worth here"  class="percent"/>
+
+				</div>
+				<div id="final">
+					<span id="marcus">grade you want to get in the class</span></br>
+					<input type="text" id="need" value="90"/>
+					<input type="button" id="sub" value="calculate"/>
+				</div>
+				</div>
+				<div id="ab"><input type="button" id="add"  title="to add another assignment, click here" value="+"/></div>
+				
+			</form>
+		</div>
+			<div id="answer">you need to get a:
+			<div id="output"></div>
+			<div id="error">error message</div>
+
+			</div>
+					<div class="fb-comments" data-href="http://whatgradedoIneed.com" data-num-posts="3" data-width="600"></div>
+
+			</div>
+</div>	
+	</body>
+</html>
